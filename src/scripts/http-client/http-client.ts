@@ -24,34 +24,30 @@ export class HttpClient {
 
   public get<T>(
     url: string,
-    method: Method = HTTP_METHODS.GET,
     options?: MethodOptions<T>
   ): Promise<ResponseType> {
-    return this.invoke<T>(url, method, options);
+    return this.invoke<T>(url, HTTP_METHODS.GET, options);
   }
 
   public post<T>(
     url: string,
-    method: Method = HTTP_METHODS.POST,
     options?: MethodOptions<T>
   ): Promise<ResponseType> {
-    return this.invoke<T>(url, method, options);
+    return this.invoke<T>(url, HTTP_METHODS.POST, options);
   }
 
   public put<T>(
     url: string,
-    method: Method = HTTP_METHODS.PUT,
     options?: MethodOptions<T>
   ): Promise<ResponseType> {
-    return this.invoke<T>(url, method, options);
+    return this.invoke<T>(url, HTTP_METHODS.PUT, options);
   }
 
   public delete<T>(
     url: string,
-    method: Method = HTTP_METHODS.DELETE,
     options?: MethodOptions<T>
   ): Promise<ResponseType> {
-    return this.invoke<T>(url, method, options);
+    return this.invoke<T>(url, HTTP_METHODS.DELETE, options);
   }
 
   public setCustomHeaders(headers: RequestHeaders) {
