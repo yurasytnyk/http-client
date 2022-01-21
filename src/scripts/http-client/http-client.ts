@@ -6,7 +6,6 @@ import { MethodOptions } from "./types/typedef";
 import { ResponseType } from "./types/typedef";
 
 export class HttpClient {
-  private baseUrl: string;
   private client: HttpClientInstance;
   private options: HttpClientOptions;
   private customHeaders: RequestHeaders = {};
@@ -16,7 +15,6 @@ export class HttpClient {
     baseUrl: string = "",
     options: HttpClientOptions = {}
   ) {
-    this.baseUrl = baseUrl;
     this.options = options;
     this.customHeaders = options.customHeaders;
     this.client = client;
@@ -77,7 +75,7 @@ export class HttpClient {
         data: processedData,
       };
 
-      const { data }: ResponseType = await this.client.init().request(request);
+      const { data }: ResponseType = await this.client.request(request);
       return data;
     } catch (error) {
       throw new Error(error.message);

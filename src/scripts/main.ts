@@ -1,10 +1,10 @@
+import axios from "axios";
+
 import { HttpClient } from "./http-client/http-client";
-import { AxiosHttpClient } from "./axios-http-client/axios-http-client";
 import { FetchHttpClient } from "./fetch-http-client/fetch-http-client";
 
 const fetchClient = new FetchHttpClient();
-const axiosClient = new AxiosHttpClient();
-const httpClient = new HttpClient(axiosClient);
+const httpClient = new HttpClient(fetchClient);
 
 interface User {
   body: string;
