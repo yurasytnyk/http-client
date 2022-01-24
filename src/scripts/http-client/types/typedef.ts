@@ -9,7 +9,7 @@ export type ResponseType = FetchResponse | AxiosResponse;
 
 export interface MethodOptions<T> {
   headers?: {};
-  body?: string | T;
+  body?: T;
 }
 
 export interface HttpClientOptions {

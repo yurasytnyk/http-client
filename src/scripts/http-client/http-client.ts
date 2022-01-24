@@ -1,7 +1,6 @@
-import { RequestHeaders } from '../fetch-http-client/fetch-http-client-types';
-import { authInterceptor } from '../utils/auth-interceptor/auth-interceptor';
-import { DataParser } from '../utils/data-parser/data-parser';
-import { getAxiosInstance } from '../utils/type-checkers/type-checkers';
+import { FetchRequestHeaders } from '../fetch-http-client/fetch-http-client-types';
+import { UrlParser } from '../utils/url-parser/url-parser';
+import { getClientInstance } from '../utils/get-client-instance/get-client-instance';
 import { HTTP_METHODS, Method } from './enums/enums';
 import { HttpClientInstance } from './types/typedef';
 import { HttpClientOptions } from './types/typedef';
@@ -11,12 +10,12 @@ import { ResponseType } from './types/typedef';
 export class HttpClient {
   private client: HttpClientInstance;
   private options: HttpClientOptions;
-  private customHeaders: RequestHeaders = {};
+  private customHeaders: FetchRequestHeaders = {};
 
   constructor(client: HttpClientInstance, options: HttpClientOptions = {}) {
     this.options = options;
     this.customHeaders = options.customHeaders;
-    this.client = client;
+    this.client = getClientInstance(client);
   }
 
   public get<T>(
@@ -47,7 +46,7 @@ export class HttpClient {
     return this.invoke<T>(url, HTTP_METHODS.DELETE, options);
   }
 
-  public setCustomHeaders(headers: RequestHeaders) {
+  public setCustomHeaders(headers: FetchRequestHeaders) {
     this.customHeaders = headers;
 
     return this;
@@ -55,11 +54,9 @@ export class HttpClient {
 
   public async settleRequests<T>(promises: Promise<T>[]) {
     const results = await Promise.allSettled(promises);
-    const fulfilled = results.filter(
-      (result): result is PromiseFulfilledResult<Awaited<T>> => {
-        return result.status === 'fulfilled';
-      }
-    );
+    const fulfilled = results.filter((result): result is PromiseFulfilledResult<Awaited<T>> => {
+      return result.status === 'fulfilled';
+    });
 
     if (!fulfilled.length) {
       const error = results.find((result): result is PromiseRejectedResult => {
@@ -82,17 +79,13 @@ export class HttpClient {
     this.setCustomHeaders(headers);
 
     try {
-      const processedData = DataParser.parseData(body);
-
-      if (getAxiosInstance(this.client)) {
-        authInterceptor(this.client);
-      }
+      const processedParams = UrlParser.parseData(window.location.search);
 
       const request = {
         method,
         url,
         headers: this.customHeaders,
-        data: processedData
+        data: body || processedParams
       };
 
       const { data }: ResponseType = await this.client.request(request);
