@@ -1,8 +1,11 @@
 import { FetchResponse, RequestConfig } from "./fetch-http-client-types";
 
 export class FetchHttpClient {
-  async request<T = any, R = FetchResponse<T>, D = any>(config: RequestConfig<T>): Promise<FetchResponse> {
-    const res = await fetch(config.url);
+  async request(config: RequestConfig): Promise<FetchResponse> {
+    const res = await fetch(config.url, {
+      method: config.method,
+      body: config.data
+    });
     const data = await res.json();
 
     return {
